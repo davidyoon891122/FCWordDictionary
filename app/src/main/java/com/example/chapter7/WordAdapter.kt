@@ -1,13 +1,14 @@
 package com.example.chapter7
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chapter7.databinding.ItemWordBinding
 
 class WordAdapter(
-    private val list: MutableList<Word>,
+    val list: MutableList<Word>,
     private val itemClickListener: ItemClickListener? = null,
     ): RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
 
@@ -19,6 +20,7 @@ class WordAdapter(
     }
 
     override fun getItemCount(): Int {
+        Log.d("getItemCount", "${list.size}")
         return list.size
     }
 

@@ -1,5 +1,6 @@
 package com.example.chapter7
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -54,8 +55,13 @@ class AddActivity : AppCompatActivity() {
             AppDataBase.getInstance(this)?.wordDao()?.insert(word)
             runOnUiThread {
                 Toast.makeText(this, "저장을 완료했습니다.", Toast.LENGTH_SHORT).show()
-                finish()
             }
+
+            val intent =  Intent().putExtra("isUpdated", true)
+
+            setResult(RESULT_OK, intent)
+
+            finish()
         }.start()
     }
 }
