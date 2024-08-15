@@ -28,6 +28,16 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
         }
     }
 
+    private val updateEditWordResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val editWord = result.data?.getParcelableExtra<Word>("editWord")
+
+        if (result.resultCode == RESULT_OK && editWord != null) {
+            updateEditWord(editWord)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -44,9 +54,11 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
             delete()
         }
 
+        binding.editImageView.setOnClickListener {
+            edit()
+        }
+
     }
-
-
 
     private fun initRecyclerView() {
         wordAdapter = WordAdapter(mutableListOf(), this)
@@ -80,6 +92,19 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
         }.start()
     }
 
+    private fun updateEditWord(word: Word) {
+        Thread {
+            val index = wordAdapter.list.indexOfFirst { it.id == word.id }
+            wordAdapter.list[index] = word
+            runOnUiThread {
+                selectedWord = word
+                wordAdapter.notifyItemChanged(index)
+                binding.textTextView.text = word.text
+                binding.meanTextView.text = word.mean
+            }
+        }.start()
+    }
+
     private fun delete() {
         if(selectedWord == null) return
 
@@ -96,6 +121,13 @@ class MainActivity : AppCompatActivity(), WordAdapter.ItemClickListener {
                 selectedWord = null
             }
         }.start()
+    }
+
+    private fun edit() {
+        if(selectedWord == null) return
+
+        val indent = Intent(this, AddActivity::class.java).putExtra("originWord", selectedWord)
+        updateEditWordResult.launch(indent)
     }
 
     override fun onClick(word: Word) {
