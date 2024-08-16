@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
+import androidx.core.widget.addTextChangedListener
 import com.example.chapter7.databinding.ActivityAddBinding
 import com.google.android.material.chip.Chip
 
@@ -39,6 +40,16 @@ class AddActivity : AppCompatActivity() {
         binding.typeChipGroup.apply {
             types.forEach { text ->
                 addView(createChip(text))
+            }
+        }
+
+        binding.textInputEditText.addTextChangedListener {
+            it?.let { text ->
+                binding.textTextInputLayout.error = when (text.length) {
+                    0  -> "값을 입력해주세요."
+                    1 -> "2자 이상을 입력해주세요."
+                    else -> null
+                }
             }
         }
 
